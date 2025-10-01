@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Hangman Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #ffd166;
+        }
+
+        .subtitle {
+            color: #118ab2;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .hangman-container {
+            flex: 1;
+            min-width: 300px;
+            background: #ffd166;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hangman {
+            height: 200px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .hangman-parts {
+            position: relative;
+            height: 100%;
+        }
+
+        .hangman-part {
+            background-color: #6a4c93;
+            position: absolute;
+            display: none;
+        }
+
+        .gallows {
+            height: 10px;
+            width: 150px;
+            background-color: #8d5b97;
+            top: 0;
+            left: 50px;
+            display: block;
+        }
+
+        .gallows-vertical {
+            height: 200px;
+            width: 10px;
+            background-color: #8d5b97;
+            top: 0;
+            left: 50px;
+            display: block;
+        }
+
+        .gallows-base {
+            height: 10px;
+            width: 100px;
+            background-color: #8d5b97;
+            top: 190px;
+            left: 10px;
+            display: block;
+        }
+
+        .rope {
+            height: 30px;
+            width: 5px;
+            background-color: #8d5b97;
+            top: 10px;
+            left: 180px;
+        }
+
+        .head {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            top: 40px;
+            left: 170px;
+        }
+
+        .body {
+            height: 60px;
+            width: 10px;
+            top: 80px;
+            left: 185px;
+        }
+
+        .left-arm {
+            height: 10px;
+            width: 40px;
+            top: 90px;
+            left: 145px;
+            transform: rotate(30deg);
+        }
+
+        .right-arm {
+            height: 10px;
+            width: 40px;
+            top: 90px;
+            left: 185px;
+            transform: rotate(-30deg);
+        }
+
+        .left-leg {
+            height: 10px;
+            width: 40px;
+            top: 140px;
+            left: 145px;
+            transform: rotate(30deg);
+        }
+
+        .right-leg {
+            height: 10px;
+            width: 40px;
+            top: 140px;
+            left: 185px;
+            transform: rotate(-30deg);
+        }
+
+        .game-info {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .word-display {
+            font-size: 2.2rem;
+            letter-spacing: 8px;
+            margin: 20px 0;
+            color: #073b4c;
+            min-height: 60px;
+            line-height: 1.5;
+        }
+
+        .hint-box {
+            background: #06d6a0;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .letter {
+            width: 40px;
+            height: 40px;
+            background: #118ab2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .letter:hover {
+            background: #0a6e8f;
+            transform: scale(1.1);
+        }
+
+        .letter:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .letter.correct {
+            background: #06d6a0;
+        }
+
+        .letter.incorrect {
+            background: #ef476f;
+        }
+
+        .message {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+            min-height: 40px;
+            color: #073b4c;
+        }
+
+        .message.win {
+            color: #06d6a0;
+        }
+
+        .message.lose {
+            color: #ef476f;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .new-game {
+            background: #ffd166;
+            color: #073b4c;
+        }
+
+        .add-word {
+            background: #118ab2;
+            color: white;
+        }
+
+        .view-words {
+            background: #06d6a0;
+            color: white;
+        }
+
+        .reset-words {
+            background: #ef476f;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal h2 {
+            color: #118ab2;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #073b4c;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #118ab2;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .input-note {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save {
+            background: #06d6a0;
+            color: white;
+        }
+
+        .cancel {
+            background: #ef476f;
+            color: white;
+        }
+
+        .word-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+            border: 2px solid #118ab2;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .word-item:last-child {
+            border-bottom: none;
+        }
+
+        .word-text {
+            font-weight: bold;
+            color: #073b4c;
+        }
+
+        .hint-text {
+            color: #118ab2;
+            font-style: italic;
+        }
+
+        .delete-btn {
+            background: #ef476f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .storage-info {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #118ab2;
+        }
+
+        @media (max-width: 650px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .word-display {
+                font-size: 1.6rem;
+                letter-spacing: 5px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kids Hangman Game</h1>
+        <p class="subtitle">Guess the word before the hangman is complete!</p>
+        <p class="storage-info">Your word list is automatically saved between sessions!</p>
+        
+        <div class="game-area">
+            <div class="hangman-container">
+                <h2>Hangman</h2>
+                <div class="hangman">
+                    <div class="hangman-parts">
+                        <div class="hangman-part gallows"></div>
+                        <div class="hangman-part gallows-vertical"></div>
+                        <div class="hangman-part gallows-base"></div>
+                        <div class="hangman-part rope"></div>
+                        <div class="hangman-part head"></div>
+                        <div class="hangman-part body"></div>
+                        <div class="hangman-part left-arm"></div>
+                        <div class="hangman-part right-arm"></div>
+                        <div class="hangman-part left-leg"></div>
+                        <div class="hangman-part right-leg"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-info">
+                <div class="word-display" id="wordDisplay"></div>
+                
+                <div class="hint-box">
+                    Hint: <span id="hintText"></span>
+                </div>
+                
+                <div class="message" id="message"></div>
+                
+                <div class="keyboard" id="keyboard">
+                    <!-- Letters will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="new-game" id="newGameBtn">New Game</button>
+            <button class="add-word" id="addWordBtn">Add New Word</button>
+            <button class="view-words" id="viewWordsBtn">View Word List</button>
+            <button class="reset-words" id="resetWordsBtn">Reset to Default</button>
+        </div>
+    </div>
+    
+    <!-- Add Word Modal -->
+    <div class="modal" id="addWordModal">
+        <div class="modal-content">
+            <h2>Add a New Word</h2>
+            <div class="form-group">
+                <label for="newWord">Word or Phrase:</label>
+                <input type="text" id="newWord" placeholder="Enter a word or phrase (letters and spaces only)" maxlength="30">
+                <p class="input-note">You can use spaces for multi-word phrases (e.g., "electric car")</p>
+            </div>
+            <div class="form-group">
+                <label for="newHint">Hint:</label>
+                <input type="text" id="newHint" placeholder="Enter a hint for the word" maxlength="50">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel" id="cancelBtn">Cancel</button>
+                <button class="save" id="saveBtn">Save Word</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Words Modal -->
+    <div class="modal" id="viewWordsModal">
+        <div class="modal-content">
+            <h2>Word List</h2>
+            <div class="word-list" id="wordList">
+                <!-- Word list will be generated by JavaScript -->
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel" id="closeWordsBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sound effect functions using the Web Audio API
+        function playStartSound() {
+            playTone(523.25, 0.3, 0.2); // C5
+            setTimeout(() => playTone(659.25, 0.3, 0.2), 200); // E5
+            setTimeout(() => playTone(783.99, 0.5, 0.3), 400); // G5
+        }
+        
+        function playLetterSound() {
+            playTone(440, 0.1, 0.1); // A4
+        }
+        
+        function playCorrectSound() {
+            playTone(523.25, 0.2, 0.2); // C5
+            setTimeout(() => playTone(659.25, 0.2, 0.2), 150); // E5
+        }
+        
+        function playWrongSound() {
+            playTone(349.23, 0.3, 0.3); // F4
+            setTimeout(() => playTone(293.66, 0.4, 0.3), 200); // D4
+        }
+        
+        function playWinSound() {
+            playTone(523.25, 0.2, 0.2); // C5
+            setTimeout(() => playTone(659.25, 0.2, 0.2), 200); // E5
+            setTimeout(() => playTone(783.99, 0.2, 0.2), 400); // G5
+            setTimeout(() => playTone(1046.50, 0.5, 0.3), 600); // C6
+        }
+        
+        function playLoseSound() {
+            playTone(523.25, 0.3, 0.3); // C5
+            setTimeout(() => playTone(493.88, 0.3, 0.3), 300); // B4
+            setTimeout(() => playTone(440, 0.3, 0.3), 600); // A4
+            setTimeout(() => playTone(392, 0.5, 0.4), 900); // G4
+        }
+        
+        function playTone(frequency, duration, volume) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.value = volume;
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        // Default vocabulary with words and hints
+        const defaultVocabulary = [
+            { word: "PYTHON", hint: "A programming language" },
+            { word: "ELEPHANT", hint: "A large animal with a trunk" },
+            { word: "SUNSHINE", hint: "What makes the day bright" },
+            { word: "BUTTERFLY", hint: "A colorful insect with wings" },
+            { word: "CHOCOLATE", hint: "A sweet treat" },
+            { word: "RAINBOW", hint: "Appears after rain with many colors" },
+            { word: "BICYCLE", hint: "A two-wheeled vehicle" },
+            { word: "JELLYFISH", hint: "A sea creature with tentacles" },
+            { word: "TELESCOPE", hint: "Used to look at stars" },
+            { word: "VOLCANO", hint: "A mountain that can erupt" },
+            { word: "ELECTRIC CAR", hint: "A vehicle that runs on batteries" },
+            { word: "ICE CREAM", hint: "A frozen dessert" }
+        ];
+
+        // Load vocabulary from localStorage or use default
+        function loadVocabulary() {
+            const savedVocabulary = localStorage.getItem('hangmanVocabulary');
+            if (savedVocabulary) {
+                return JSON.parse(savedVocabulary);
+            } else {
+                // Save default vocabulary to localStorage
+                saveVocabulary(defaultVocabulary);
+                return defaultVocabulary;
+            }
+        }
+
+        // Save vocabulary to localStorage
+        function saveVocabulary(vocab) {
+            localStorage.setItem('hangmanVocabulary', JSON.stringify(vocab));
+        }
+
+        // Reset vocabulary to default
+        function resetVocabulary() {
+            if (confirm("Are you sure you want to reset the word list to the default words? This cannot be undone.")) {
+                saveVocabulary(defaultVocabulary);
+                vocabulary = [...defaultVocabulary];
+                initGame();
+                alert("Word list has been reset to default words.");
+            }
+        }
+
+        // Validate word input - allow letters and spaces
+        function isValidWord(word) {
+            // Allow letters, spaces, and common punctuation in words
+            return /^[A-Za-z\s\-']+$/.test(word) && word.trim().length > 0;
+        }
+
+        // Initialize vocabulary
+        let vocabulary = loadVocabulary();
+
+        // Game state
+        let currentWord = "";
+        let currentHint = "";
+        let displayWord = [];
+        let guessedLetters = [];
+        let wrongGuesses = 0;
+        const maxWrongGuesses = 6; // rope, head, body, arms, legs
+        let gameOver = false;
+        let gameWon = false;
+
+        // DOM elements
+        const wordDisplay = document.getElementById('wordDisplay');
+        const hintText = document.getElementById('hintText');
+        const message = document.getElementById('message');
+        const keyboard = document.getElementById('keyboard');
+        const newGameBtn = document.getElementById('newGameBtn');
+        const addWordBtn = document.getElementById('addWordBtn');
+        const viewWordsBtn = document.getElementById('viewWordsBtn');
+        const resetWordsBtn = document.getElementById('resetWordsBtn');
+        const addWordModal = document.getElementById('addWordModal');
+        const viewWordsModal = document.getElementById('viewWordsModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const closeWordsBtn = document.getElementById('closeWordsBtn');
+        const newWordInput = document.getElementById('newWord');
+        const newHintInput = document.getElementById('newHint');
+        const wordList = document.getElementById('wordList');
+
+        // Initialize the game
+        function initGame() {
+            // Play start sound
+            playStartSound();
+            
+            // Reset game state
+            guessedLetters = [];
+            wrongGuesses = 0;
+            gameOver = false;
+            gameWon = false;
+            message.textContent = "";
+            message.className = "message";
+            
+            // Reset hangman
+            document.querySelectorAll('.hangman-part').forEach(part => {
+                if (!part.classList.contains('gallows') && 
+                    !part.classList.contains('gallows-vertical') && 
+                    !part.classList.contains('gallows-base')) {
+                    part.style.display = 'none';
+                }
+            });
+            
+            // Select a random word from vocabulary
+            if (vocabulary.length > 0) {
+                const randomIndex = Math.floor(Math.random() * vocabulary.length);
+                currentWord = vocabulary[randomIndex].word.toUpperCase();
+                currentHint = vocabulary[randomIndex].hint;
+                
+                // Initialize display word - show spaces and hide letters
+                displayWord = [];
+                for (let i = 0; i < currentWord.length; i++) {
+                    if (currentWord[i] === ' ') {
+                        displayWord.push(' '); // Show spaces
+                    } else if (currentWord[i] === '-' || currentWord[i] === "'") {
+                        displayWord.push(currentWord[i]); // Show hyphens and apostrophes
+                    } else {
+                        displayWord.push('_'); // Hide letters
+                    }
+                }
+                updateWordDisplay();
+                
+                // Update hint
+                hintText.textContent = currentHint;
+            } else {
+                // No words available
+                wordDisplay.textContent = "No words available";
+                hintText.textContent = "Add some words to play!";
+                message.textContent = "Please add words using the 'Add New Word' button";
+                gameOver = true;
+            }
+            
+            // Create keyboard
+            createKeyboard();
+        }
+
+        // Update the word display
+        function updateWordDisplay() {
+            // Create a formatted display that handles spaces properly
+            let formattedDisplay = '';
+            for (let i = 0; i < displayWord.length; i++) {
+                if (displayWord[i] === ' ') {
+                    formattedDisplay += '   '; // Extra space for word separation
+                } else {
+                    formattedDisplay += displayWord[i] + ' ';
+                }
+            }
+            wordDisplay.textContent = formattedDisplay.trim();
+        }
+
+        // Create the keyboard
+        function createKeyboard() {
+            keyboard.innerHTML = '';
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            
+            for (let letter of letters) {
+                const button = document.createElement('button');
+                button.className = 'letter';
+                button.textContent = letter;
+                button.addEventListener('click', () => handleGuess(letter));
+                keyboard.appendChild(button);
+            }
+        }
+
+        // Handle a letter guess
+        function handleGuess(letter) {
+            if (gameOver || guessedLetters.includes(letter)) return;
+            
+            // Play letter sound
+            playLetterSound();
+            
+            guessedLetters.push(letter);
+            const letterButton = Array.from(keyboard.children).find(btn => btn.textContent === letter);
+            
+            // Check if the letter is in the word (case insensitive)
+            const upperWord = currentWord.toUpperCase();
+            if (upperWord.includes(letter)) {
+                // Correct guess
+                letterButton.classList.add('correct');
+                playCorrectSound();
+                
+                // Update display word
+                for (let i = 0; i < upperWord.length; i++) {
+                    if (upperWord[i] === letter) {
+                        displayWord[i] = currentWord[i]; // Use original case
+                    }
+                }
+                
+                updateWordDisplay();
+                
+                // Check for win - only check letters, not spaces or punctuation
+                const lettersToGuess = displayWord.filter(char => 
+                    char === '_' && /[A-Za-z]/.test(currentWord[i])
+                ).length;
+                
+                if (lettersToGuess === 0) {
+                    gameWon = true;
+                    gameOver = true;
+                    message.textContent = "Congratulations! You won!";
+                    message.classList.add('win');
+                    playWinSound();
+                }
+            } else {
+                // Wrong guess
+                letterButton.classList.add('incorrect');
+                playWrongSound();
+                wrongGuesses++;
+                
+                // Update hangman
+                updateHangman();
+                
+                // Check for loss
+                if (wrongGuesses >= maxWrongGuesses) {
+                    gameOver = true;
+                    message.textContent = `Game Over! The word was: ${currentWord}`;
+                    message.classList.add('lose');
+                    playLoseSound();
+                }
+            }
+        }
+
+        // Update the hangman drawing
+        function updateHangman() {
+            const parts = [
+                'rope', 'head', 'body', 'left-arm', 'right-arm', 
+                'left-leg', 'right-leg'
+            ];
+            
+            if (wrongGuesses <= parts.length) {
+                document.querySelector(`.${parts[wrongGuesses-1]}`).style.display = 'block';
+            }
+        }
+
+        // Add a new word to vocabulary
+        function addNewWord() {
+            const word = newWordInput.value.trim();
+            const hint = newHintInput.value.trim();
+            
+            if (word && hint && isValidWord(word)) {
+                vocabulary.push({ word: word.toUpperCase(), hint });
+                saveVocabulary(vocabulary); // Save to localStorage
+                newWordInput.value = '';
+                newHintInput.value = '';
+                addWordModal.style.display = 'none';
+                alert(`"${word}" has been added to the game!`);
+            } else {
+                alert('Please enter a valid word (letters and spaces only) and hint.');
+            }
+        }
+
+        // Display the word list
+        function displayWordList() {
+            wordList.innerHTML = '';
+            
+            if (vocabulary.length === 0) {
+                wordList.innerHTML = '<p>No words in the list. Add some words to play!</p>';
+                return;
+            }
+            
+            vocabulary.forEach((item, index) => {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+                
+                wordItem.innerHTML = `
+                    <div>
+                        <span class="word-text">${item.word}</span>
+                        <span class="hint-text"> - ${item.hint}</span>
+                    </div>
+                    <button class="delete-btn" data-index="${index}">Delete</button>
+                `;
+                
+                wordList.appendChild(wordItem);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    deleteWord(index);
+                });
+            });
+        }
+
+        // Delete a word from the vocabulary
+        function deleteWord(index) {
+            if (confirm(`Are you sure you want to delete "${vocabulary[index].word}"?`)) {
+                vocabulary.splice(index, 1);
+                saveVocabulary(vocabulary); // Save to localStorage
+                displayWordList();
+                
+                // If we deleted the current word, start a new game
+                if (vocabulary.length > 0) {
+                    initGame();
+                } else {
+                    // If no words left, show message
+                    message.textContent = "No words available. Please add some words to play!";
+                    gameOver = true;
+                }
+            }
+        }
+
+        // Event listeners
+        newGameBtn.addEventListener('click', initGame);
+        
+        addWordBtn.addEventListener('click', () => {
+            addWordModal.style.display = 'flex';
+        });
+        
+        viewWordsBtn.addEventListener('click', () => {
+            displayWordList();
+            viewWordsModal.style.display = 'flex';
+        });
+        
+        resetWordsBtn.addEventListener('click', resetVocabulary);
+        
+        cancelBtn.addEventListener('click', () => {
+            addWordModal.style.display = 'none';
+        });
+        
+        closeWordsBtn.addEventListener('click', () => {
+            viewWordsModal.style.display = 'none';
+        });
+        
+        saveBtn.addEventListener('click', addNewWord);
+        
+        // Also allow saving with Enter key
+        newHintInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addNewWord();
+            }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === addWordModal) {
+                addWordModal.style.display = 'none';
+            }
+            if (e.target === viewWordsModal) {
+                viewWordsModal.style.display = 'none';
+            }
+        });
+
+        // Initialize the game when page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>
