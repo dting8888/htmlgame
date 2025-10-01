@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulary Hangman Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Kids Vocabulary Hangman Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * {
@@ -13,41 +13,45 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Source Sans Pro', sans-serif;
-            background-color: #f5f7ff;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
             color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden;
         }
         .game-container {
             width: 1280px;
             min-height: 720px;
             background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
         .header {
-            background-color: #1a237e;
+            background: linear-gradient(90deg, #FF9A8B 0%, #FF6B95 100%);
             color: white;
             padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 24px 24px 0 0;
         }
         .title {
-            font-size: 32px;
-            font-weight: 700;
+            font-family: 'Fredoka One', cursive;
+            font-size: 36px;
             display: flex;
             align-items: center;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
         .title i {
             margin-right: 12px;
-            font-size: 36px;
+            font-size: 40px;
         }
         .score {
             display: flex;
@@ -57,22 +61,23 @@
         .score-item {
             display: flex;
             align-items: center;
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 10px 16px;
             border-radius: 20px;
+            font-weight: 600;
         }
         .score-item i {
             margin-right: 8px;
         }
         .tabs {
             display: flex;
-            background-color: #e8eaf6;
+            background-color: #FFF5F7;
         }
         .tab {
             padding: 15px 30px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
-            color: #1a237e;
+            color: #FF6B95;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -83,8 +88,8 @@
         }
         .tab.active {
             background-color: white;
-            color: #3949ab;
-            border-bottom: 3px solid #3949ab;
+            color: #FF6B95;
+            border-bottom: 4px solid #FF6B95;
         }
         .tab:hover:not(.active) {
             background-color: rgba(255, 255, 255, 0.5);
@@ -109,32 +114,33 @@
             justify-content: center;
             padding-right: 30px;
         }
-        .hangman-container {
-            width: 300px;
-            height: 300px;
+        .character-container {
+            width: 320px;
+            height: 320px;
             position: relative;
             margin-bottom: 30px;
         }
-        .hangman-svg {
+        .character-svg {
             width: 100%;
             height: 100%;
         }
-        .hangman-part {
-            stroke: #3949ab;
-            stroke-width: 4;
-            fill: none;
-            stroke-linecap: round;
+        .character-part {
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
         }
-        .hangman-part.visible {
+        .character-part.visible {
             opacity: 1;
         }
         .wrong-guesses {
             font-size: 24px;
-            color: #d32f2f;
-            font-weight: 600;
+            color: #FF6B95;
+            font-weight: 700;
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .wrong-guesses i {
+            margin-right: 8px;
         }
         .right-section {
             flex: 1;
@@ -143,15 +149,16 @@
             padding-left: 30px;
         }
         .category {
-            background-color: #e8eaf6;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a237e;
+            background-color: #FFF5F7;
+            padding: 15px 20px;
+            border-radius: 16px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #FF6B95;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
+            box-shadow: 0 4px 12px rgba(255, 107, 149, 0.1);
         }
         .category i {
             margin-right: 10px;
@@ -163,62 +170,70 @@
         }
         .letter {
             display: inline-block;
-            width: 50px;
-            height: 60px;
-            border-bottom: 3px solid #3949ab;
-            margin: 0 8px;
+            width: 56px;
+            height: 70px;
+            border-bottom: 4px solid #FF6B95;
+            margin: 0 10px;
             text-align: center;
-            font-size: 36px;
+            font-size: 40px;
             font-weight: 700;
-            color: #1a237e;
-            line-height: 60px;
+            color: #FF6B95;
+            line-height: 70px;
             transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+            background-color: #FFF5F7;
         }
         .letter.space {
             width: 30px;
             border-bottom: none;
+            background-color: transparent;
         }
         .letter.revealed {
-            animation: reveal 0.5s ease;
+            animation: bounce 0.5s ease;
+            background-color: #FFECF1;
         }
-        @keyframes reveal {
-            0% { transform: rotateY(90deg); }
-            100% { transform: rotateY(0); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
         .keyboard {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 30px;
         }
         .key {
-            width: 45px;
-            height: 45px;
-            background-color: #e8eaf6;
-            border: none;
-            border-radius: 6px;
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a237e;
+            width: 50px;
+            height: 50px;
+            background-color: #FFF5F7;
+            border: 2px solid #FF9A8B;
+            border-radius: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #FF6B95;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(255, 107, 149, 0.1);
         }
         .key:hover {
-            background-color: #c5cae9;
-            transform: translateY(-2px);
+            background-color: #FFECF1;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(255, 107, 149, 0.2);
         }
         .key:active {
             transform: translateY(0);
         }
         .key.correct {
-            background-color: #c8e6c9;
-            color: #2e7d32;
+            background-color: #C8E6C9;
+            color: #2E7D32;
+            border-color: #4CAF50;
             pointer-events: none;
         }
         .key.wrong {
-            background-color: #ffcdd2;
-            color: #c62828;
+            background-color: #FFCDD2;
+            color: #C62828;
+            border-color: #F44336;
             pointer-events: none;
         }
         .controls {
@@ -227,30 +242,31 @@
             gap: 20px;
         }
         .btn {
-            padding: 12px 24px;
-            background-color: #3949ab;
+            padding: 14px 28px;
+            background: linear-gradient(90deg, #FF9A8B 0%, #FF6B95 100%);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            font-weight: 600;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 149, 0.3);
         }
         .btn:hover {
-            background-color: #303f9f;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(255, 107, 149, 0.4);
         }
         .btn i {
             margin-right: 8px;
         }
         .btn-danger {
-            background-color: #d32f2f;
+            background: linear-gradient(90deg, #FF9A8B 0%, #FF6B95 100%);
         }
         .btn-danger:hover {
-            background-color: #c62828;
+            background: linear-gradient(90deg, #FF8A7B 0%, #FF5B85 100%);
         }
         .message {
             position: fixed;
@@ -258,35 +274,35 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             text-align: center;
             z-index: 100;
             display: none;
         }
         .message.show {
             display: block;
-            animation: fadeIn 0.3s ease;
+            animation: popIn 0.3s ease;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
         .message-title {
-            font-size: 28px;
-            font-weight: 700;
+            font-family: 'Fredoka One', cursive;
+            font-size: 32px;
             margin-bottom: 15px;
         }
         .message-text {
             font-size: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .message.win .message-title {
-            color: #2e7d32;
+            color: #4CAF50;
         }
         .message.lose .message-title {
-            color: #c62828;
+            color: #FF6B95;
         }
         .overlay {
             position: fixed;
@@ -316,14 +332,14 @@
             margin-bottom: 20px;
         }
         .word-management-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #1a237e;
+            font-size: 28px;
+            font-weight: 700;
+            color: #FF6B95;
         }
         .word-list-container {
             flex-grow: 1;
-            background-color: #f5f7ff;
-            border-radius: 8px;
+            background-color: #FFF5F7;
+            border-radius: 16px;
             padding: 20px;
             overflow-y: auto;
             margin-bottom: 20px;
@@ -333,22 +349,22 @@
             align-items: center;
             padding: 15px;
             background-color: white;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(255, 107, 149, 0.1);
         }
         .word-info {
             flex-grow: 1;
         }
         .word-text {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a237e;
+            font-size: 22px;
+            font-weight: 700;
+            color: #FF6B95;
             margin-bottom: 5px;
         }
         .word-category {
-            font-size: 16px;
-            color: #3949ab;
+            font-size: 18px;
+            color: #FF9A8B;
             margin-bottom: 5px;
         }
         .word-hint {
@@ -360,12 +376,12 @@
             gap: 10px;
         }
         .icon-btn {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background-color: #e8eaf6;
-            border: none;
-            color: #3949ab;
+            background-color: #FFF5F7;
+            border: 2px solid #FF9A8B;
+            color: #FF6B95;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -373,38 +389,41 @@
             transition: all 0.2s ease;
         }
         .icon-btn:hover {
-            background-color: #c5cae9;
+            background-color: #FFECF1;
         }
         .icon-btn.delete:hover {
-            background-color: #ffcdd2;
-            color: #d32f2f;
+            background-color: #FFCDD2;
+            color: #F44336;
+            border-color: #F44336;
         }
         .add-word-form {
-            background-color: #e8eaf6;
-            border-radius: 8px;
-            padding: 20px;
+            background-color: #FFF5F7;
+            border-radius: 16px;
+            padding: 25px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(255, 107, 149, 0.1);
         }
         .form-group {
             margin-bottom: 15px;
         }
         .form-label {
             display: block;
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a237e;
-            margin-bottom: 5px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #FF6B95;
+            margin-bottom: 8px;
         }
         .form-input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #c5cae9;
-            border-radius: 4px;
-            font-size: 16px;
+            padding: 12px;
+            border: 2px solid #FF9A8B;
+            border-radius: 12px;
+            font-size: 18px;
+            background-color: white;
         }
         .form-input:focus {
             outline: none;
-            border-color: #3949ab;
+            border-color: #FF6B95;
         }
         .form-row {
             display: flex;
@@ -416,56 +435,203 @@
         .empty-state {
             text-align: center;
             padding: 40px;
-            color: #666;
+            color: #FF9A8B;
         }
         .empty-state i {
             font-size: 48px;
             margin-bottom: 15px;
-            color: #c5cae9;
         }
         .empty-state-text {
-            font-size: 18px;
+            font-size: 20px;
         }
         .sound-toggle {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background-color: #3949ab;
+            background: linear-gradient(90deg, #FF9A8B 0%, #FF6B95 100%);
             color: white;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 16px rgba(255, 107, 149, 0.3);
             transition: all 0.2s ease;
             z-index: 50;
         }
         .sound-toggle:hover {
-            background-color: #303f9f;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 149, 0.4);
         }
         .sound-toggle.muted {
-            background-color: #666;
+            background: linear-gradient(90deg, #9E9E9E 0%, #757575 100%);
         }
         .import-export {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 20px;
         }
         .file-input {
             display: none;
         }
+        .sound-indicator {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background-color: rgba(255, 107, 149, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .sound-indicator.show {
+            opacity: 1;
+        }
+        .audio-init-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 107, 149, 0.9);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .audio-init-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .audio-init-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 32px;
+            color: #FF6B95;
+            margin-bottom: 15px;
+        }
+        .audio-init-text {
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+        .audio-init-btn {
+            padding: 14px 28px;
+            background: linear-gradient(90deg, #FF9A8B 0%, #FF6B95 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 149, 0.3);
+        }
+        .audio-init-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(255, 107, 149, 0.4);
+        }
+        .test-sound-btn {
+            margin-left: 10px;
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+        .test-sound-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+        
+        /* Confetti animation for winning */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #FF6B95;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Background decorations */
+        .bg-decoration {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        .bg-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: #FF6B95;
+        }
+        .bg-circle-1 {
+            top: 10%;
+            left: 5%;
+        }
+        .bg-circle-2 {
+            bottom: 15%;
+            right: 8%;
+            width: 150px;
+            height: 150px;
+            background-color: #FF9A8B;
+        }
+        .bg-star {
+            font-size: 60px;
+            color: #FF6B95;
+        }
+        .bg-star-1 {
+            top: 20%;
+            right: 15%;
+            transform: rotate(15deg);
+        }
+        .bg-star-2 {
+            bottom: 25%;
+            left: 12%;
+            transform: rotate(-10deg);
+            font-size: 40px;
+            color: #FF9A8B;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
+        <!-- Background decorations -->
+        <div class="bg-decoration bg-circle bg-circle-1"></div>
+        <div class="bg-decoration bg-circle bg-circle-2"></div>
+        <div class="bg-decoration bg-star bg-star-1"><i class="material-icons">star</i></div>
+        <div class="bg-decoration bg-star bg-star-2"><i class="material-icons">star</i></div>
+        
         <div class="header">
             <div class="title">
                 <i class="material-icons">school</i>
-                Vocabulary Hangman
+                Kids Vocabulary Game
             </div>
             <div class="score">
                 <div class="score-item">
@@ -494,34 +660,52 @@
             <!-- Game Tab Content -->
             <div class="tab-content active" id="game-content">
                 <div class="left-section">
-                    <div class="hangman-container">
-                        <svg class="hangman-svg" viewBox="0 0 300 300">
-                            <!-- Gallows -->
-                            <line x1="50" y1="250" x2="150" y2="250" class="hangman-part visible" />
-                            <line x1="100" y1="250" x2="100" y2="50" class="hangman-part visible" />
-                            <line x1="100" y1="50" x2="200" y2="50" class="hangman-part visible" />
-                            <line x1="200" y1="50" x2="200" y2="80" class="hangman-part visible" />
+                    <div class="character-container">
+                        <svg class="character-svg" viewBox="0 0 320 320">
+                            <!-- Ground -->
+                            <ellipse cx="160" cy="300" rx="140" ry="20" fill="#AED581" />
                             
-                            <!-- Head -->
-                            <circle cx="200" cy="100" r="20" class="hangman-part" id="part-1" />
+                            <!-- Snowman parts (visible on wrong guesses) -->
+                            <!-- Part 1: Bottom snowball -->
+                            <circle cx="160" cy="240" r="50" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" class="character-part" id="part-1" />
                             
-                            <!-- Body -->
-                            <line x1="200" y1="120" x2="200" y2="180" class="hangman-part" id="part-2" />
+                            <!-- Part 2: Middle snowball -->
+                            <circle cx="160" cy="170" r="40" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" class="character-part" id="part-2" />
                             
-                            <!-- Left arm -->
-                            <line x1="200" y1="140" x2="170" y2="160" class="hangman-part" id="part-3" />
+                            <!-- Part 3: Head -->
+                            <circle cx="160" cy="110" r="30" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" class="character-part" id="part-3" />
                             
-                            <!-- Right arm -->
-                            <line x1="200" y1="140" x2="230" y2="160" class="hangman-part" id="part-4" />
+                            <!-- Part 4: Left eye -->
+                            <circle cx="150" cy="105" r="5" fill="#333333" class="character-part" id="part-4" />
                             
-                            <!-- Left leg -->
-                            <line x1="200" y1="180" x2="170" y2="220" class="hangman-part" id="part-5" />
+                            <!-- Part 5: Right eye -->
+                            <circle cx="170" cy="105" r="5" fill="#333333" class="character-part" id="part-5" />
                             
-                            <!-- Right leg -->
-                            <line x1="200" y1="180" x2="230" y2="220" class="hangman-part" id="part-6" />
+                            <!-- Part 6: Carrot nose -->
+                            <polygon points="160,110 165,120 155,120" fill="#FF9800" class="character-part" id="part-6" />
+                            
+                            <!-- Always visible parts -->
+                            <!-- Hat -->
+                            <rect x="140" y="75" width="40" height="25" fill="#424242" rx="5" />
+                            <rect x="130" y="95" width="60" height="8" fill="#424242" />
+                            
+                            <!-- Buttons (always visible) -->
+                            <circle cx="160" cy="160" r="4" fill="#333333" />
+                            <circle cx="160" cy="180" r="4" fill="#333333" />
+                            
+                            <!-- Arms (always visible) -->
+                            <line x1="120" y1="170" x2="90" y2="150" stroke="#8D6E63" stroke-width="6" stroke-linecap="round" />
+                            <line x1="200" y1="170" x2="230" y2="150" stroke="#8D6E63" stroke-width="6" stroke-linecap="round" />
+                            
+                            <!-- Scarf (always visible) -->
+                            <rect x="130" y="130" width="60" height="15" fill="#F44336" rx="7" />
+                            <rect x="125" y="135" width="15" height="40" fill="#F44336" rx="7" transform="rotate(15 132 155)" />
                         </svg>
                     </div>
-                    <div class="wrong-guesses">Wrong Guesses: <span id="wrong-count">0</span>/6</div>
+                    <div class="wrong-guesses">
+                        <i class="material-icons">error_outline</i>
+                        Wrong Guesses: <span id="wrong-count">0</span>/6
+                    </div>
                 </div>
                 
                 <div class="right-section">
@@ -546,6 +730,10 @@
                         <button class="btn" id="hint-btn">
                             <i class="material-icons">lightbulb</i>
                             Hint
+                        </button>
+                        <button class="test-sound-btn" id="test-sound-btn">
+                            <i class="material-icons">volume_up</i>
+                            Test Sound
                         </button>
                     </div>
                 </div>
@@ -616,39 +804,49 @@
     <button class="sound-toggle" id="sound-toggle">
         <i class="material-icons" id="sound-icon">volume_up</i>
     </button>
+    
+    <div class="sound-indicator" id="sound-indicator">Playing sound...</div>
+    
+    <!-- Audio Initialization Overlay -->
+    <div class="audio-init-overlay" id="audio-init-overlay">
+        <div class="audio-init-container">
+            <div class="audio-init-title">Enable Sound Effects</div>
+            <div class="audio-init-text">Click the button below to enable sound effects in the game. This is required due to browser policies.</div>
+            <button class="audio-init-btn" id="audio-init-btn">Enable Sound</button>
+        </div>
+    </div>
 
     <script>
         // Default words
         const defaultWords = [
-            { word: "LENS", category: "Science", hint: "A transparent optical device used to converge or diverge light" },
-            { word: "FOCUS", category: "Science", hint: "The point where light rays converge after passing through a lens" },
-            { word: "REFRACTION", category: "Science", hint: "The bending of light as it passes from one medium to another" },
-            { word: "CONVEX", category: "Science", hint: "A type of lens that is thicker at the center than at the edges" },
-            { word: "CONCAVE", category: "Science", hint: "A type of lens that is thinner at the center than at the edges" },
-            { word: "PRISM", category: "Science", hint: "A transparent optical element with flat, polished surfaces" },
-            { word: "MAGNIFICATION", category: "Science", hint: "The process of making something appear larger" },
-            { word: "REFLECTION", category: "Science", hint: "The bouncing back of light from a surface" },
-            { word: "WAVELENGTH", category: "Science", hint: "The distance between successive crests of a wave" },
-            { word: "SPECTRUM", category: "Science", hint: "The range of colors produced when light is dispersed" },
-            { word: "ELEPHANT", category: "Animals", hint: "The largest land animal with a trunk" },
-            { word: "GIRAFFE", category: "Animals", hint: "The tallest land animal with a long neck" },
-            { word: "PENGUIN", category: "Animals", hint: "A flightless bird that lives in cold regions" },
-            { word: "DOLPHIN", category: "Animals", hint: "An intelligent marine mammal" },
-            { word: "BUTTERFLY", category: "Animals", hint: "An insect with colorful wings" },
-            { word: "JAPAN", category: "Geography", hint: "An island country in East Asia" },
-            { word: "EGYPT", category: "Geography", hint: "A country in North Africa with ancient pyramids" },
-            { word: "BRAZIL", category: "Geography", hint: "The largest country in South America" },
-            { word: "AUSTRALIA", category: "Geography", hint: "A country and continent surrounded by water" },
-            { word: "CANADA", category: "Geography", hint: "The second largest country by area" },
-            { word: "PIANO", category: "Music", hint: "A musical instrument with black and white keys" },
-            { word: "GUITAR", category: "Music", hint: "A string instrument with six strings" },
-            { word: "VIOLIN", category: "Music", hint: "A string instrument played with a bow" },
-            { word: "DRUM", category: "Music", hint: "A percussion instrument" },
-            { word: "TRUMPET", category: "Music", hint: "A brass instrument" },
-            { word: "ICE CREAM", category: "Food", hint: "A frozen dessert" },
-            { word: "NEW YORK", category: "Geography", hint: "A major city in the United States" },
-            { word: "HARRY POTTER", category: "Books", hint: "A famous series of fantasy novels" },
-            { word: "MOUNT EVEREST", category: "Geography", hint: "The highest mountain in the world" }
+            { word: "CAT", category: "Animals", hint: "A small furry pet that meows" },
+            { word: "DOG", category: "Animals", hint: "A loyal pet that barks" },
+            { word: "BIRD", category: "Animals", hint: "An animal that can fly and has feathers" },
+            { word: "FISH", category: "Animals", hint: "An animal that lives in water" },
+            { word: "APPLE", category: "Food", hint: "A red or green fruit that grows on trees" },
+            { word: "BANANA", category: "Food", hint: "A yellow curved fruit" },
+            { word: "PIZZA", category: "Food", hint: "A round Italian dish with cheese" },
+            { word: "CAKE", category: "Food", hint: "A sweet dessert for birthdays" },
+            { word: "SUN", category: "Nature", hint: "The bright star in the sky during the day" },
+            { word: "MOON", category: "Nature", hint: "The bright object in the sky at night" },
+            { word: "STAR", category: "Nature", hint: "A twinkling light in the night sky" },
+            { word: "TREE", category: "Nature", hint: "A tall plant with a trunk and leaves" },
+            { word: "FLOWER", category: "Nature", hint: "A colorful plant part that smells nice" },
+            { word: "RAINBOW", category: "Nature", hint: "A colorful arc in the sky after rain" },
+            { word: "BOOK", category: "School", hint: "You read this to learn things" },
+            { word: "PENCIL", category: "School", hint: "You use this to write or draw" },
+            { word: "SCHOOL", category: "School", hint: "A place where children learn" },
+            { word: "TEACHER", category: "School", hint: "A person who teaches at school" },
+            { word: "FRIEND", category: "People", hint: "Someone you like to play with" },
+            { word: "FAMILY", category: "People", hint: "People who live together and love each other" },
+            { word: "TOY", category: "Play", hint: "Something fun that children play with" },
+            { word: "BALL", category: "Play", hint: "A round toy you can throw or kick" },
+            { word: "GAME", category: "Play", hint: "A fun activity with rules" },
+            { word: "PARTY", category: "Play", hint: "A fun celebration with cake and gifts" },
+            { word: "ICE CREAM", category: "Food", hint: "A cold sweet treat that melts" },
+            { word: "TEDDY BEAR", category: "Toys", hint: "A soft toy bear" },
+            { word: "BIRTHDAY", category: "Celebrations", hint: "The day you were born each year" },
+            { word: "CHRISTMAS", category: "Celebrations", hint: "A winter holiday with gifts and a tree" }
         ];
         
         // Game state
@@ -660,6 +858,7 @@
         let losses = 0;
         let hintUsed = false;
         let soundEnabled = true;
+        let audioInitialized = false;
         
         // DOM elements
         const wordContainer = document.getElementById('word-container');
@@ -696,13 +895,136 @@
         // Sound elements
         const soundToggle = document.getElementById('sound-toggle');
         const soundIcon = document.getElementById('sound-icon');
+        const soundIndicator = document.getElementById('sound-indicator');
+        const testSoundBtn = document.getElementById('test-sound-btn');
+        const audioInitOverlay = document.getElementById('audio-init-overlay');
+        const audioInitBtn = document.getElementById('audio-init-btn');
         
-        // Create audio elements for sound effects
-        const startSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
-        const winSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
-        const loseSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
-        const rightGuessSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
-        const wrongGuessSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+        // Create audio context for Web Audio API
+        let audioContext = null;
+        
+        // Create simple sound effects using Web Audio API
+        function createSound(frequency, duration, type = 'sine') {
+            if (!audioContext) return null;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+            
+            return oscillator;
+        }
+        
+        // Initialize audio context
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioInitialized = true;
+                audioInitOverlay.style.display = 'none';
+                localStorage.setItem('hangmanAudioEnabled', 'true');
+            }
+        }
+        
+        // Sound effect functions
+        function playStartSound() {
+            if (!audioInitialized || !soundEnabled) return;
+            
+            createSound(440, 0.1); // A4
+            setTimeout(() => createSound(554, 0.1), 100); // C#5
+            setTimeout(() => createSound(659, 0.2), 200); // E5
+            showSoundIndicator("Game started");
+        }
+        
+        function playWinSound() {
+            if (!audioInitialized || !soundEnabled) return;
+            
+            createSound(523, 0.1); // C5
+            setTimeout(() => createSound(659, 0.1), 100); // E5
+            setTimeout(() => createSound(784, 0.1), 200); // G5
+            setTimeout(() => createSound(1047, 0.3), 300); // C6
+            showSoundIndicator("You won!");
+            
+            // Create confetti effect
+            createConfetti();
+        }
+        
+        function playLoseSound() {
+            if (!audioInitialized || !soundEnabled) return;
+            
+            createSound(440, 0.2); // A4
+            setTimeout(() => createSound(415, 0.2), 200); // G#4
+            setTimeout(() => createSound(392, 0.2), 400); // G4
+            setTimeout(() => createSound(349, 0.3), 600); // F4
+            showSoundIndicator("Game over");
+        }
+        
+        function playRightGuessSound() {
+            if (!audioInitialized || !soundEnabled) return;
+            
+            createSound(523, 0.1); // C5
+            setTimeout(() => createSound(659, 0.1), 50); // E5
+            showSoundIndicator("Correct!");
+        }
+        
+        function playWrongGuessSound() {
+            if (!audioInitialized || !soundEnabled) return;
+            
+            createSound(220, 0.2, 'sawtooth'); // A3
+            showSoundIndicator("Wrong!");
+        }
+        
+        function playTestSound() {
+            if (!audioInitialized) {
+                showMessage('Sound Not Enabled', 'Please click "Enable Sound" first to use sound effects.', 'error');
+                return;
+            }
+            
+            createSound(440, 0.1); // A4
+            setTimeout(() => createSound(554, 0.1), 100); // C#5
+            setTimeout(() => createSound(659, 0.2), 200); // E5
+            showSoundIndicator("Test sound played");
+        }
+        
+        // Create confetti effect for winning
+        function createConfetti() {
+            const colors = ['#FF6B95', '#FF9A8B', '#FFC107', '#4CAF50', '#2196F3', '#9C27B0'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 30);
+            }
+        }
+        
+        // Show sound indicator
+        function showSoundIndicator(text) {
+            soundIndicator.textContent = text;
+            soundIndicator.classList.add('show');
+            
+            setTimeout(() => {
+                soundIndicator.classList.remove('show');
+            }, 1000);
+        }
         
         // Load words from localStorage or use default
         function loadWords() {
@@ -739,25 +1061,28 @@
             localStorage.setItem('hangmanLosses', losses.toString());
         }
         
-        // Play sound function
-        function playSound(sound) {
-            if (soundEnabled) {
-                sound.currentTime = 0;
-                sound.play().catch(e => console.log('Error playing sound:', e));
-            }
-        }
-        
         // Toggle sound
         soundToggle.addEventListener('click', () => {
             soundEnabled = !soundEnabled;
             if (soundEnabled) {
                 soundIcon.textContent = 'volume_up';
                 soundToggle.classList.remove('muted');
+                showSoundIndicator("Sound enabled");
             } else {
                 soundIcon.textContent = 'volume_off';
                 soundToggle.classList.add('muted');
+                showSoundIndicator("Sound disabled");
             }
         });
+        
+        // Initialize audio
+        audioInitBtn.addEventListener('click', () => {
+            initAudio();
+            playTestSound();
+        });
+        
+        // Test sound button
+        testSoundBtn.addEventListener('click', playTestSound);
         
         // Tab switching
         gameTab.addEventListener('click', () => {
@@ -787,7 +1112,7 @@
             categoryElement.textContent = currentWord.category;
             wrongCountElement.textContent = wrongGuesses;
             
-            // Reset hangman parts
+            // Reset character parts
             for (let i = 1; i <= 6; i++) {
                 document.getElementById(`part-${i}`).classList.remove('visible');
             }
@@ -821,7 +1146,7 @@
             overlay.classList.remove('show');
             
             // Play start sound
-            playSound(startSound);
+            playStartSound();
         }
         
         // Guess a letter
@@ -836,10 +1161,10 @@
                 if (key.textContent === letter) {
                     if (currentWord.word.includes(letter)) {
                         key.classList.add('correct');
-                        playSound(rightGuessSound);
+                        playRightGuessSound();
                     } else {
                         key.classList.add('wrong');
-                        playSound(wrongGuessSound);
+                        playWrongGuessSound();
                     }
                 }
             });
@@ -860,7 +1185,7 @@
                     wins++;
                     winsElement.textContent = wins;
                     saveScores();
-                    playSound(winSound);
+                    playWinSound();
                     showMessage('You Win!', `The word was "${currentWord.word}". Great job!`, 'win');
                 }
             } else {
@@ -868,7 +1193,7 @@
                 wrongGuesses++;
                 wrongCountElement.textContent = wrongGuesses;
                 
-                // Show hangman part
+                // Show character part
                 document.getElementById(`part-${wrongGuesses}`).classList.add('visible');
                 
                 // Check if lost
@@ -876,7 +1201,7 @@
                     losses++;
                     lossesElement.textContent = losses;
                     saveScores();
-                    playSound(loseSound);
+                    playLoseSound();
                     
                     // Reveal word
                     const letters = wordContainer.querySelectorAll('.letter');
@@ -1062,7 +1387,15 @@
         
         // Initialize game on load
         loadWords();
-        initGame();
+        
+        // Check if audio was previously enabled
+        const audioPreviouslyEnabled = localStorage.getItem('hangmanAudioEnabled');
+        if (audioPreviouslyEnabled === 'true') {
+            initAudio();
+        } else {
+            // Show audio initialization overlay
+            audioInitOverlay.style.display = 'flex';
+        }
     </script>
 </body>
 </html>
